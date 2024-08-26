@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Avista e Parcelado</title>
+
+</head>
+<body>
+
+    <script>
+        const produto = Number(prompt("valor do prduto a vista: "))
+        const aVista = 0.1
+        const valorSoma = produto * aVista
+        const valorFinal = produto - valorSoma
+        alert(`Valor final a vista: R$ ${valorFinal.toFixed(2)}`)
+
+        const produto2 = Number(prompt("Valor do produto parcelado: "))
+        const parcelado = 3
+        const valorSoma2 = produto / parcelado
+        alert(`Valor final parcelado em 3x: R$ ${valorSoma2.toFixed(2)}`)
+    </script>
+    
+</body>
+</html>
