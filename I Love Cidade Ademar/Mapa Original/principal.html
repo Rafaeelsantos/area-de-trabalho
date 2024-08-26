@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>I love Cidade Ademar</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+
+        
+        #map {
+            height: 350px;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #imagem-overlay {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 380px;
+            height: 350px;
+            background-color: rgb(162, 81, 255);
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: none;
+            z-index: 9999;
+        }
+
+        #imagem-overlay img {
+            width: 100%;
+            height: 80%;
+            object-fit: cover;
+        }
+
+        #imagem-overlay .informacoes {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .wrapper{
+            left: 100px;
+            margin: 40px;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .wrapper i{
+            top: 50%;
+            height: 46px;
+            width: 46px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: absolute;
+            text-align: center;
+            line-height: 46px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .wrapper i:first-child{
+            left: -23px;
+        }
+
+        .wrapper i:last-child{
+            right: -23px;
+        }
+
+        .wrapper .carousel{
+            font-size: 0px;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .carousel img{
+            height: 340px;
+            object-fit: cover;
+            margin-left: 14px;
+            width: calc(100% / 3);
+        }
+
+        .carousel img:first-child{
+            margin-left: 0px;
+        }
+
+        h1 {
+            font-family: 'Zilla Slab', serif;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .descricao {
+            font-family: 'Zilla Slab', serif;
+            color: #2c405e;
+            text-align: center;
+            font-size: 19px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+        .imagemdefundo img {
+            width: 185px; /* Defina a largura desejada */
+            height: auto; /* Mantém a proporção da imagem */
+            float: left; /* Alinha as imagens lado a lado */
+            margin-right: 14px; /* Espaço entre as imagens */
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        nav {
+            font-family: 'Zilla Slab', serif;
+            background-color: #dedede;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+        }
+
+        nav ul li a:hover {
+            background-color: #333333;
+            color: #c5ee10;
+        }
+
+        #video {
+        margin-top: 20px;
+        text-align: center;
+        }
+
+        #video iframe {
+            width: 100%;
+            max-width: 560px;
+            height: 315px;
+        }
+
+        footer {
+            background-color: #f5f5f5;
+            padding: 10px 20px;
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
+            height: 150px;
+        }
+
+        .container-footer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-col {
+            display: inline-block;
+            vertical-align: top;
+            width: 25%;
+            padding: 10px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .footer-col ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 5px;
+        }
+
+        .footer-col ul li a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        .form-sub input[type="email"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .form-sub button {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+        }
+
+        .medias-sociais a {
+            color: #888;
+            margin-right: 10px;
+        }
+
+
+        
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">Página Inicial</a></li>
+            <li><a href="sobre.html"> Sobre</a></li>
+            <li><a href="#">Mapping</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+    </nav>
+    <h1>Mapeamento Colaborativo - Cidade Ademar</h1>
+    <div class="descricao"> <strong> Bem-vindo </strong> à apresentação do nosso mapa da região, destacando pontos de quadras, praças, biblioteca e cursos para jovens ! Este mapa foi cuidadosamente elaborado para fornecer informações sobre locais onde você pode relaxar, estudar, treinar e se profissionalizar gratuitamente.
+            O mapa foi criado por uma equipe de futuros desenvolvedores, usando JavaScript, CSS, HTML, openstreetmap e leaflet no curso de desenvolvimento de sistemas da Despertar.
+    </div>
+    <div class="wrapper">
+        <i id="left" class="fa-solid fa-chevron-left"></i>
+        <div class="carousel">
+            <img src="https://imgur.com/fsvHQTa.jpg" alt="img" draggable="false">
+            <img src="https://imgur.com/ani75hS.jpg" alt="img" draggable="false">
+            <img src="https://imgur.com/HSsLPPp.jpg" alt="img" draggable="false">
+            <img src="https://imgur.com/7Ivn39d.jpg" alt="img" draggable="false">
+            <img src="https://imgur.com/AiXSvEg.jpg" alt="img" draggable="false">
+            <img src="https://imgur.com/WB45baR.jpg" alt="img" draggable="false">
+        </div>
+        <i id="right" class="fa-solid fa-chevron-right"></i>
+    </div>
+
+
+    </div>
+    <div id="map"></div>
+    <div id="imagem-overlay">
+        <div id="video-wrapper">
+            <iframe id="video" width="560" height="315" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <img id="imagem" src="" alt="Imagem">
+        <p id="p">  </p>
+    </div>
+
+    <div id="video">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/-xLGNv7Cs3k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+
+    <footer>
+        <div class="container-footer">
+            <div class="row-footer">
+                <!-- footer col-->
+                <div class="footer-col">
+                    <h4>Parceiros</h4>
+                    <ul>
+                        <li><a href="http://www.labcidade.fau.usp.br/"> Labcidade </a></li>
+                        <li><a href=""> Sub-prefeitura da Cidade Ademar </a></li>
+                        <li><a href=""> política de privacidade </a></li>
+                    </ul>
+                </div>
+                <!--end footer col-->
+                <!-- footer col-->
+                <div class="footer-col">
+                    <h4>Colabore</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Dúvidas</a></li>
+                        <li><a href="#">Colabore</a></li>                        
+                    </ul>
+                </div>
+                <!--end footer col-->
+                <!-- footer col-->
+                <div class="footer-col">
+                    <h4>Mapas</h4>
+                    <ul>
+                        <li><a href="#">Árvores</a></li>
+                        <li><a href="#">Quadras</a></li>
+                        <li><a href="#">Praças</a></li>
+                        <li><a href="#">Cursos</a></li>
+                    </ul>
+                </div>
+                <!--end footer col-->
+                <!-- footer col-->
+                <div class="footer-col">
+                    <h4>Se inscreva!</h4>
+                    <div class="form-sub">
+                        <form>
+                            <input type="email" placeholder="Digite o seu e-mail" required>
+                            <button>subscrever</button>
+                        </form>
+                    </div>
+
+                    <div class="medias-socias">
+                        <a href="#"> <i class="fa fa-facebook"></i> </a>
+                        <a href="#"> <i class="fa fa-instagram"></i> </a>
+                        <a href="#"> <i class="fa fa-twitter"></i> </a>
+                        <a href="#"> <i class="fa fa-linkedin"></i> </a>
+                    </div>
+
+                </div>
+                <!--end footer col-->
+            </div>
+        </div>
+    </footer>
+
+
+    
+
+    
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js">
+   
+    </script>
+    <script>
+        
+        var map = L.map('map').setView([-23.67624, -46.64091], 12);
+
+        // Criar o mapa usando um provedor de tile
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Criar os dois grupos de camadas para escolas e praças
+        var escolasLayer = L.layerGroup();
+        var pracasLayer = L.layerGroup();
+
+        // Adicionar o controle de camadas ao mapa
+        L.control.layers(null, { "Escolas": escolasLayer, "Praças": pracasLayer }).addTo(map);
+
+
+
+        // Lista de coordenadas, nomes e imagens dos marcadores
+
+        var coordenadas = [
+            { lat: -23.67624, lng: -46.64091, nome: 'Quadra da Associação Despertar', imagem: 'https://i.imgur.com/XjlTvEP.jpg', informacoes: "quadra de futebol, basquete e volei. quadra disponivel das 10h as 19h todos so nos finais de semana", icone: 'https://api.iconify.design/iconoir/basketball-field.svg' }, 
+            { lat: -23.67485, lng: -46.64909, nome: 'Escola Estadual Professora Joanna Abrahão', imagem: 'https://i.imgur.com/13aj0Gj.jpg', informacoes: "é isso ai", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},  
+            { lat: -23.6668384, lng: -46.6404358, nome:'Escola Estadual Maria Augusta', imagem: 'https://i.imgur.com/13aj0Gj.jpg', informacoes: "quadra de futebol, aberta das 8h as 18:50 apenas finais de semana", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat: -23.66161, lng: -46.66278, nome: 'Praça Comunitária Ligia Maria Salgado Nóbrega', imagem: 'https://www.prefeitura.sp.gov.br/cidade/secretarias/regionais/upload/cidade_ademar/RC0_02_vista_aerea_geral.jpg', informacoes: "uuuuu", icone: 'https://api.iconify.design/tabler/brand-linktree.svg?color=green'},
+            { lat: -23.66802, lng: -46.63537, nome: 'CEU Caminho do Mar', imagem: 'https://www.prefeitura.sp.gov.br/cidade/secretarias/regionais/upload/jabaquara/imagens/2012_01_09_ferias_ceu_4.jpg', informacoes: "eiii", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat: -23.67479, lng: -46.63223, nome: 'EE Doutor João Ernesto Faggin', imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh7EPzKxmZ42aJkpSGrrau1lCy5tvuKaOUpk9jtWKxAZeXEoaZnPuCLTLlNGVrchUDxPQ&usqp=CAU', informacoes: "iiiiiii", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat: -23.68058, lng: -46.63618, nome: 'Escola Estadual Yolanda Bernardini Robert', imagem:'https://f.i.uol.com.br/fotografia/2022/03/30/16486815596244e257452ff_1648681559_3x2_rt.jpg', informacoes: "wndy lee", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat: -23.68097, lng: -46.63677, nome: 'Leonor Quadros', imagem: 'https://veja.abril.com.br/wp-content/uploads/2016/06/alx_ee_estupro_original.jpeg?quality=90&strip=info&w=1025&h=519&crop=1', informacoes: "rafa", icone: 'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat: -23.68412, lng: -46.65077, nome: 'IDB - Castelinho Dom Bosco', imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHlXsAYJLZbSxsotiM_ihcjmZWYIFF7RtSV522LLqfyBx2a0ACfBz7Rjg_7nF5g29cncY&usqp=CAU', informacoes: "gabriel", icone: 'https://api.iconify.design/material-symbols/menu-book-outline-rounded.svg?color=red'},
+            { lat: -23.65287, lng: -46.67822, nome: 'Praça Carlos Baptista de Magalhães', imagem:'https://lh3.googleusercontent.com/p/AF1QipOOxcwoog4a-KKXRLUxOOoo_KDZ70kW3P7sARwb=s1360-w1360-h1020', informacoes: "jp ee", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66694, lng: -46.65319, nome: 'Praça', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020', informacoes: "jp lindo", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.65053, lng: -46.67363, nome: 'Praça escondida', imagem:'https://imgur.com/a/Dx3PLDd', informacoes: "jp m", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.65287, lng: -46.67822, nome: 'Praça Carlos Baptista de Magalhães', imagem:'https://lh3.googleusercontent.com/p/AF1QipOOxcwoog4a-KKXRLUxOOoo_KDZ70kW3P7sARwb=s1360-w1360-h1020', informacoes: "jp ee", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66161, lng: -46.66278, nome: 'Praça Comunitária Ligia Maria Salgado Nóbrega', imagem: 'https://editorajuma.com.br/wp-content/uploads/Praca-Comunitaria-Ligia.jpg', informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.67434, lng: -46.66227, nome: 'Praça Joaniza',imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020', informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66694, lng: -46.65709, nome: 'Praça Manoel Branco Miranda', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020', informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.67845, lng:-46.63471, nome:  'Rua Sebastião Afonso', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020', informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66965, lng: -46.64041, nome: 'R. Monte Real, 196', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020',  informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66988, lng:-46.64178, nome:  'Tv. Fluorita, 14',imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020',  informacoes: "jp lele", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66716, lng: -46.67572, nome: 'Praça Zavuvus', imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO2MFcSgq6vqEfetqw-OtU3lIWaAxCrkk6ivXobxoknnBBmAMappowCJYUtaiJSVN731c&usqp=CAU', informacoes: "oi", icone: 'https://imgur.com/Dzt5maw.png'},
+            { lat: -23.66265, lng: -46.66015, nome: 'Paarque Nabuco', imagem: 'https://1.bp.blogspot.com/-4JVj6E3Ud6s/VdIydsO4KRI/AAAAAAAAzRM/VUpBIBNVuhc/s1600/DSC06793.jpg', informacoes: "ouu"},
+            { lat: -23.69502, lng:  -46.6433,  nome: 'Parque Sete Campos', imagem: 'https://payload.cargocollective.com/1/3/112332/2266864/foto-03_590.jpg', informacoes: "tttt"}, 
+            { lat: -23.66802, lng: -46.63537, nome: 'CEU Caminho do Mar', imagem: 'https://www.prefeitura.sp.gov.br/cidade/secretarias/regionais/upload/jabaquara/imagens/2012_01_09_ferias_ceu_4.jpg', informacoes: "eiii", icone: ''},
+            { lat: -23.67479, lng: -46.63223, nome: 'EE Doutor João Ernesto Faggin', imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh7EPzKxmZ42aJkpSGrrau1lCy5tvuKaOUpk9jtWKxAZeXEoaZnPuCLTLlNGVrchUDxPQ&usqp=CAU', informacoes: "iiiiiii"},
+            { lat: -23.68058, lng: -46.63618, nome: 'Escola Estadual Yolanda Bernardini Robert', imagem:'https://f.i.uol.com.br/fotografia/2022/03/30/16486815596244e257452ff_1648681559_3x2_rt.jpg', informacoes: "wndy lee"},
+            { lat: -23.68097, lng: -46.63677, nome: 'Leonor Quadros', imagem: 'https://veja.abril.com.br/wp-content/uploads/2016/06/alx_ee_estupro_original.jpeg?quality=90&strip=info&w=1025&h=519&crop=1', informacoes: "rafa"},
+            { lat: -23.67654, lng: -46.64079, nome: 'Associação Comunitária Despertar', imagem:'https://images.app.goo.gl/YSzvNaBNB87BXnBCA', informacoes: "gabriel"},
+            { lat: -23.66591, lng: -46.64916, nome: 'Aldeia do Futuro', imagem:'https://editorajuma.com.br/wp-content/uploads/Aldeia-do-Futuro.jpg', informacoes: "gabriel"},
+            { lat: -23.68412, lng: -46.65077, nome: 'IDB - Castelinho Dom Bosco', imagem:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHlXsAYJLZbSxsotiM_ihcjmZWYIFF7RtSV522LLqfyBx2a0ACfBz7Rjg_7nF5g29cncY&usqp=CAU', informacoes: "gabriel"},
+            { lat: -23.68202, lng: -46.63606, nome: 'INSTIT. ENTIDADE DE PROMOCAO E ASSISTENCIA SOCIAL ESPACO ABERTO', imagem:'https://images.app.goo.gl/vUC2bqDmgR99r6Q18', informacoes: "gabriel"},
+            { lat: -23.66375, lng: -23.66375, nome: 'Instituto Salve Quebrada', imagem:'https://images.app.goo.gl/7nFDLEauThTGrcpJA', informacoes: "gabriel"},
+            { lat:-23.68172 , lng: -46.66363, nome: 'Associação Comunitária Jardim São Jorge Adjacência', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020',  informacoes: "gabriel"},
+            { lat:-23.68199 , lng: -46.63557, nome: 'Rua Diogo Arias', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020',  informacoes: "gabriel"},
+            { lat: -23.67249, lng: -46.64241, nome: 'Rua Florinda Mouzo Bermudez', imagem:'https://lh3.googleusercontent.com/p/AF1QipMYECBpRiVZ6_A_wIBz1VIGnD3ZKJ19MOZIgWKa=s1360-w1360-h1020', informacoes: "gabriel"},
+            { lat:-23.67725 , lng: -46.66305, nome: 'SASF I - CIDADE ADEMAR', imagem:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWN07q6We9cihTlkxNGymRF-jOEohR5ZWDxBwQFWB2D6f4ZIe6LvD0upDxPef7loyUcYo&usqp=CAU', informacoes: "gabriel"},
+            { lat:-23.69211 , lng: -46.64032, nome: 'Sasf ll Cidade Ademar - Creser', imagem:'https://images.app.goo.gl/h5aUemLc44XVbbTz9', informacoes: "gabriel"},
+            { lat: -23.66591, lng: -46.64916, nome: 'Aldeia do Futuro', imagem:'https://editorajuma.com.br/wp-content/uploads/Aldeia-do-Futuro.jpg', informacoes: "gabriel"},
+            { lat: -23.67897, lng: -46.65017, nome: 'Campo de Futebol do BDS', imagem:'https://lh3.googleusercontent.com/p/AF1QipOR9m3deRXe9OMFZ3NU2mr7gceqSc6O9SNr0PGp=s1360-w1360-h1020', informacoes: "gabriel", icone:'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat:-23.6553 , lng: -46.67411, nome: 'Cdc Cidade Ademar', imagem:'https://lh3.googleusercontent.com/p/AF1QipOKz98ZOrAfojJUARJ8hTsiYD_aApsdQ5tA2Khw=s1360-w1360-h1020', informacoes: "gabriel", icone:'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat:-23.65883 , lng:-46.65971, nome: 'CDC FERRADURA', imagem:'https://lh3.googleusercontent.com/p/AF1QipOKc8hIHpMd2j3VAh2O9h4IeaTd1qqx1r-2JPrk=s1360-w1360-h1020', informacoes: "gabriel", icone:'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat:-23.66287 , lng: -46.67023, nome: 'H&M Arena de Esportes', imagem:'https://lh3.googleusercontent.com/p/AF1QipMgf9xHb4JdtkfeCEz72nOA2XkVRAQbLhy2_m1-=s1360-w1360-h1020', informacoes: "gabriel", icone:'https://api.iconify.design/iconoir/basketball-field.svg'},
+            { lat:-23.67219 , lng:-46.63644 , nome: 'Futebol Alegria', imagem:'https://lh3.googleusercontent.com/p/AF1QipNXEOTSf94itVPtGw7BJwjxf5HHY9Yi4foQJ83n=s1360-w1360-h1020', informacoes: "gabriel", icone:'https://api.iconify.design/iconoir/basketball-field.svg'},
+        ];
+
+        // Adicionar marcadores no mapa com nomes e imagens
+        coordenadas.forEach(function(coord) {
+            var icon = L.icon({
+                iconUrl: coord.icone,
+                iconSize: [30, 30],
+                popupAnchor: [0, -20]
+            });
+
+            var marker = L.marker([coord.lat, coord.lng], { icon: icon }).addTo(map);
+            marker.bindPopup(coord.nome);
+
+            const carousel = document.querySelector(".carousel"),
+            firstImg = carousel.querySelectorAll("img")[0];
+            arrowIcons = document.querySelectorAll(".wrapper i");
+
+            let isDragStart = false, prevPageX, prevScrolLeft;
+
+            const showHideIcons = () => {
+                //mostrando e ocultando o ícone anterior/próximo de acordo com o valor esquerdo da rolagem do carrossel
+                let scrollWidth = carousel.scrollWidth - carousel.clientWidth; //obtendo largura máxima de rolagem
+                arrowIcons[0].style.display = carousel.scrollLeft == 0 ? "none" : "block";
+                arrowIcons[1].style.display = carousel.scrollLeft == scrollWidth ? "none" : "block";
+
+                if(carousel.scrollLeft == 0) {
+                    arrowIcons[0].style.display = "none";
+                } else {
+                    arrowIcons[0].style.display = "block";
+                }
+            }
+
+            arrowIcons.forEach(icon => {
+                icon.addEventListener("click", () => {
+                    let firstImgWidth = firstImg.clientWidth +14 //obtendo a largura da primeira imagem e adicionando 14 valores de margem
+                    //se o ícone clicado for deixado, reduza o valor da largura da rolagem do carrossel à esquerda, caso contrário, adicione a ele
+                    carousel.scrollLeft += icon.id == "left" ? -firstImgWidth : firstImgWidth;
+                    setTimeout(() => showHideIcons(), 60); //chamando showhideicons após 60ms
+                    if (icon.id == "left") {
+                        carousel.scrollLeft -= firstImgWidth;
+                    } else {
+                        carousel.scrollLeft += firstImgWidth;
+                    }
+                });
+            });
+
+            const dragStart = (e) => {
+                //atualizando o valor das variáveis ​​globais no evento mouse down
+                isDragStart = true;
+                prevPageX = e.pageX || e.touched[0].pageX;
+                prevScrolLeft = carousel.scrollLeft
+            }
+
+            const dragging = (e) => {
+                //rolagem de imagens/carrossel para a esquerda de acordo com o ponteiro do mouse
+                if(!isDragStart) return;
+                e.preventDefault();
+                carousel.classList.add("dragging");
+                let positionDiff = (e.pageX || e.touched[0].pageX) - prevPageX
+                carousel.scrolleft = prevScrolLeft - positionDiff;
+                showHideIcons();
+            }
+
+            const dragStop = () => {
+                isDragStart = false;
+                carousel.classList.remove("dragging");
+
+
+            }
+
+            carousel.addEventListener("mousedown", dragStart);
+            carousel.addEventListener("touchstart", dragStart);
+
+            carousel.addEventListener("mousemove", dragging);
+            carousel.addEventListener("touchmove", dragging);
+
+            carousel.addEventListener("mouseup", dragStop);
+            carousel.addEventListener("mouseleave", dragStop);
+            carousel.addEventListener("touchend", dragStop);
+
+            // Evento de clique no marcador
+            marker.on('click', function() {
+                var imagemOverlay = document.getElementById('imagem-overlay');
+                var imagem = document.getElementById('imagem');
+                var informacoes = document.getElementById("p");
+                imagem.src = coord.imagem;
+                informacoes.textContent = coord.informacoes;
+                imagemOverlay.style.display = 'block';
+            });
+        });
+
+        map.on('click', function(event) {
+            var imagemOverlay = document.getElementById('imagem-overlay');
+            if (event.originalEvent.target.id !== 'imagem-overlay') {
+                imagemOverlay.style.display = 'none';
+            }
+        });
+        
+        
+    </script>
+
+</body>
+</html>
